@@ -6,7 +6,7 @@ const firebaseConfig = {
   apiKey: "AIzaSyCKfIxBfzLWrAvbPjsvjVjEUtIPRU-i-2E",
   authDomain: "leads-task.firebaseapp.com",
   projectId: "leads-task",
-  storageBucket: "https://leads-task.firebaseapp.com/__/auth/handler",
+  storageBucket: "https://social-login-github.vercel.app/",
   messagingSenderId: "715384762081",
   appId: "1:715384762081:web:2117cb7a5cc8a4daf411a0",
 };
