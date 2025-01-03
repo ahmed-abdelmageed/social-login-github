@@ -1,21 +1,18 @@
 import { initializeApp } from "firebase/app";
 import { getAuth, GithubAuthProvider, signInWithPopup } from "firebase/auth";
 
-// Firebase configuration
 const firebaseConfig = {
-  apiKey: "AIzaSyCKfIxBfzLWrAvbPjsvjVjEUtIPRU-i-2E",
-  authDomain: "leads-task.firebaseapp.com",
-  projectId: "leads-task",
-  storageBucket: "https://social-login-github.vercel.app/",
-  messagingSenderId: "715384762081",
-  appId: "1:715384762081:web:2117cb7a5cc8a4daf411a0",
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+  appId: import.meta.env.VITE_FIREBASE_APP_ID,
 };
 
-// Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 
-// Initialize GitHub provider with scopes
 const provider = new GithubAuthProvider();
 provider.addScope("repo");
 provider.addScope("read:user");

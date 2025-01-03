@@ -1,33 +1,41 @@
 import React from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { GitHubProvider, useGitHub } from "./context/GitHubContext";
+import {
+  Navigate,
+  Route,
+  BrowserRouter as Router,
+  Routes,
+} from "react-router-dom";
+import { ConfigProvider } from "antd";
+import { GitHubProvider } from "./context/GitHubContext";
 import AppContent from "./Pages/AppContent";
+import Navbar from "./components/Navbar ";
 import ReposList from "./Pages/Repos";
-import Navbar from "./Pages/Navbar ";
+import ProtectedRoute from "./components/ProtectedRoute/ProtectedRoute";
+import themeConfig from "./themeConfig";
+import NotFound from "./Pages/NotFound";
 
-const App = () => {
-  return (
-    <GitHubProvider> 
+const App = () => (
+  <ConfigProvider theme={themeConfig}>
+    <GitHubProvider>
       <Router>
         <Routes>
-          <Route path="/" element={<AppContent />} /> 
-          <Route path="/repos" element={<ReposListWithNavbar />} /> 
-          <Route path="*" element={<div>404 - Page Not Found</div>} />
+          <Route path="/login" element={<AppContent />} />
+          <Route
+            path="/"
+            element={
+              <ProtectedRoute>
+                <>
+                  <Navbar />
+                  <ReposList />
+                </>
+              </ProtectedRoute>
+            }
+          />
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </Router>
     </GitHubProvider>
-  );
-};
-
-const ReposListWithNavbar = () => {
-  const { userLoggedIn } = useGitHub();
-
-  return (
-    <>
-      {userLoggedIn && <Navbar />} 
-      <ReposList />
-    </>
-  );
-};
+  </ConfigProvider>
+);
 
 export default App;

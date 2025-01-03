@@ -4,105 +4,90 @@ import { auth } from "../firebase";
 
 const GitHubContext = createContext();
 
+export const useGitHub = () => useContext(GitHubContext);
+
+const Loading = () => (
+  <div style={{ textAlign: "center", margin: "20px 0" }}>
+    <div className="spinner" />
+    <p>Loading...</p>
+  </div>
+);
+
 export const GitHubProvider = ({ children }) => {
   const [repos, setRepos] = useState([]);
   const [userLoggedIn, setUserLoggedIn] = useState(false);
-  const [githubToken, setGithubToken] = useState(null);
+  const [githubToken, setGithubToken] = useState(
+    localStorage.getItem("githubToken") || null
+  );
+  const [loading, setLoading] = useState(false);
 
-  // Load token and fetch repos on initialization
   useEffect(() => {
-    const storedToken = localStorage.getItem("githubToken");
-    if (storedToken) {
-      setGithubToken(storedToken);
+    if (githubToken) {
       setUserLoggedIn(true);
-      fetchGitHubRepos(storedToken, 10);
+      fetchRepos(githubToken);
     }
-  }, []);
+  }, [githubToken]);
 
-  // GitHub Login Function
   const loginWithGitHub = async () => {
-    const provider = new GithubAuthProvider();
-    provider.addScope("repo");
-
     try {
+      const provider = new GithubAuthProvider();
+      provider.addScope("repo");
       const result = await signInWithPopup(auth, provider);
       const credential = GithubAuthProvider.credentialFromResult(result);
       const token = credential?.accessToken;
 
       if (token) {
         setGithubToken(token);
+        localStorage.setItem("githubToken", token);
         setUserLoggedIn(true);
-        localStorage.setItem("githubToken", token); // Store token in local storage
-        await fetchGitHubRepos(token, 10);
+        fetchRepos(token);
       } else {
         console.error("GitHub token is missing.");
       }
     } catch (error) {
-      console.error("Error during login:", error);
+      console.error("Login failed:", error);
     }
   };
 
-  // Logout Function
   const logout = async () => {
     try {
       await signOut(auth);
-      setRepos([]);
-      setUserLoggedIn(false);
-      setGithubToken(null);
-      localStorage.removeItem("githubToken"); // Clear token from local storage
-
+      clearSession();
     } catch (error) {
-      console.error("Error during logout:", error);
+      console.error("Logout failed:", error);
     }
   };
 
-  // Fetch GitHub Repositories
-  const fetchGitHubRepos = async (token, perPage) => {
-    let page = 1;
-    let allRepos = [];
-    let hasNextPage = true;
+  const fetchRepos = async (token) => {
+    setLoading(true);
+    try {
+      const response = await fetch("https://api.github.com/user/repos", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
 
-    while (hasNextPage) {
-      try {
-        const response = await fetch(`https://api.github.com/user/repos?page=${page}&per_page=${perPage}`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+      if (!response.ok) throw new Error("Failed to fetch repositories");
 
-        if (!response.ok) {
-          const errorData = await response.json();
-          console.error("GitHub Error:", errorData);
-          throw new Error("Failed to fetch repositories");
-        }
-
-        const repos = await response.json();
-        allRepos = [...allRepos, ...repos];
-
-        const linkHeader = response.headers.get("Link");
-        hasNextPage = linkHeader && linkHeader.includes('rel="next"');
-        if (hasNextPage) page++;
-      } catch (error) {
-        console.error("Error fetching GitHub repos:", error);
-        break;
-      }
+      const reposData = await response.json();
+      setRepos(reposData);
+    } catch (error) {
+      console.error("Error fetching repos:", error);
+    } finally {
+      setLoading(false);
     }
+  };
 
-    setRepos(allRepos);
+  const clearSession = () => {
+    setGithubToken(null);
+    setUserLoggedIn(false);
+    setRepos([]);
+    localStorage.removeItem("githubToken");
   };
 
   return (
     <GitHubContext.Provider
-      value={{
-        userLoggedIn,
-        repos,
-        loginWithGitHub,
-        logout,
-      }}
+      value={{ repos, userLoggedIn, loginWithGitHub, logout }}
     >
-      {children}
+      {loading ? <Loading /> : children}
     </GitHubContext.Provider>
   );
-};
-
-export const useGitHub = () => {
-  return useContext(GitHubContext);
 };

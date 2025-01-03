@@ -4,12 +4,11 @@ import { useGitHub } from "../context/GitHubContext";
 
 const Navbar = () => {
   const { userLoggedIn, logout } = useGitHub();
-  const navigate = useNavigate(); // Initialize useNavigate
+  const navigate = useNavigate();
 
-  // Updated logout function with navigation
-  const handleLogout = () => {
-    logout(); // Call the logout from context
-    navigate("/"); // Navigate to the home page after logout
+  const handleLogout = async () => {
+    await logout();
+    await navigate("/login"); // This is async and should be handled accordingly
   };
 
   return (
@@ -21,12 +20,12 @@ const Navbar = () => {
         <div className="flex items-center space-x-4">
           {userLoggedIn ? (
             <>
-              <Link to="/repos" className="text-white hover:text-gray-300">
+              <Link to="/" className="text-white hover:text-gray-300">
                 Repositories
               </Link>
-              
+
               <button
-                onClick={handleLogout} 
+                onClick={handleLogout}
                 className="bg-red-600 text-white py-2 px-4 rounded-lg hover:bg-red-700"
               >
                 Logout
@@ -34,7 +33,7 @@ const Navbar = () => {
             </>
           ) : (
             <Link
-              to="/"
+              to="/login"
               className="bg-gray-800 text-white py-2 px-4 rounded-lg hover:bg-gray-900"
             >
               Login
