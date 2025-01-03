@@ -1,17 +1,13 @@
 import React, { createContext, useState, useContext, useEffect } from "react";
 import { GithubAuthProvider, signInWithPopup, signOut } from "firebase/auth";
 import { auth } from "../firebase";
+import Loading from "../components/Loading";
 
 const GitHubContext = createContext();
 
 export const useGitHub = () => useContext(GitHubContext);
 
-const Loading = () => (
-  <div style={{ textAlign: "center", margin: "20px 0" }}>
-    <div className="spinner" />
-    <p>Loading...</p>
-  </div>
-);
+
 
 export const GitHubProvider = ({ children }) => {
   const [repos, setRepos] = useState([]);

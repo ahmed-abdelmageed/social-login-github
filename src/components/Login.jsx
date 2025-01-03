@@ -11,7 +11,6 @@ const LoginPage = ({ onLogin }) => {
       </div>
 
       <div className="relative bg-white w-96 rounded-3xl shadow-xl p-8 transform hover:scale-105 transition-transform duration-300 ease-in-out">
-        {/* Logo Section */}
         <div className="flex items-center justify-center mb-6">
           <img
             src="https://upload.wikimedia.org/wikipedia/commons/9/91/Octicons-mark-github.svg"
@@ -24,7 +23,7 @@ const LoginPage = ({ onLogin }) => {
           Welcome to GitHub
         </h1>
         <p className="text-lg text-center text-gray-600 mb-8">
-          Sign in to explore and manage your repositories seamlessly.
+          Sign in to explore your repositories.
         </p>
 
         <button

@@ -16,6 +16,5 @@ const auth = getAuth(app);
 const provider = new GithubAuthProvider();
 provider.addScope("repo");
 provider.addScope("read:user");
-provider.addScope("user:email");
 
 export { auth, provider, signInWithPopup };

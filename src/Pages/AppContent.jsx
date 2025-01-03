@@ -1,4 +1,3 @@
-// AppContent.js
 import React, { useEffect } from "react";
 import { useGitHub } from "../context/GitHubContext";
 import { useNavigate } from "react-router-dom";

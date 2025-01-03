@@ -4,7 +4,6 @@ import { MemoryRouter } from "react-router-dom";
 import { GitHubProvider, useGitHub } from "../src/context/GitHubContext";
 import Navbar from "../src/components/Navbar ";
 
-// Mock GitHubContext
 jest.mock("../src/context/GitHubContext", () => ({
   useGitHub: jest.fn(),
   GitHubProvider: ({ children }) => <div>{children}</div>,
@@ -48,7 +47,6 @@ describe("Navbar Component", () => {
       </GitHubProvider>
     );
 
-    // Use `act()` to wrap the async code
     await act(async () => {
       fireEvent.click(screen.getByText(/Logout/i));
     });
