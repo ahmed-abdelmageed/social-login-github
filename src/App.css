@@ -2,3 +2,19 @@
 @tailwind components;
 @tailwind utilities;
 
+.repos-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem; 
+  }
+  
+  .repo-card {
+    width: 100%; 
+  }
+  
+  @media (min-width: 768px) {
+    .repo-card {
+      max-width: 100%; 
+    }
+  }
+  

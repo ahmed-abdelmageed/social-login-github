@@ -33,7 +33,8 @@ const RepoCard = ({ repo }) => {
         </a>
       }
       bordered={false}
-      className="mb-5 rounded-lg border border-gray-200 shadow-sm"
+      className="rounded-lg shadow-sm border border-gray-200"
+      style={{ width: "100%" }}
     >
       <Tag
         color={repo.private ? "red" : "green"}
